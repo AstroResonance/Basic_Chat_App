@@ -1,39 +1,61 @@
+import javax.swing.*;
 import java.awt.*;
 import java.io.IOException;
 
 public class YoChild extends YoClient {
     private int yoCount;
-    private Label yoLabel;
+    private final Label yoLabel = new Label("Yo Count: 0");
     private int howdyCount;
-    private Label howdyLabel;
+    private final Label howdyLabel = new Label("Howdy Count: 0");
+    private int recvYo;
+    private int recvHowdy;
+    private final Label recvhowdyLabel = new Label("Received Howdy Count: 0");
+    private final Label recvyoLabel = new Label("Received Yo Count: 0");
+
+    private JButton howdyButton;
 
     public YoChild(String host, int port) throws IOException {
         initUI();
-        connect();
-        listen();
+        if(connect()){
+            listen();
+        }
     }
 
-    public void sendYo() {
-        this.send(this.SEND_YO);
-    }
 
-    public void sendHowdy() {
-        this.send(this.SEND_HOWDY);
-    }
+    public void howdyButton(){
+        howdyButton = new JButton("Howdy");
 
+    };
     @Override
-    public void updateStats(char recvCh) {
-        if (recvCh == this.SEND_YO || recvCh == this.RECV_YO) {
-            this.yoCount++;
-            this.yoLabel.setText("Yo count: " + this.yoCount);
-        }
-        else if (recvCh == this.SEND_HOWDY || recvCh == this.RECV_HOWDY) {
-            this.howdyCount++;
-            this.howdyLabel.setText("Howdy count: " + this.howdyCount);
-        }
-        if (this.yoCount % 5 == 0){
-            updateConsoleText(yoLabel.getText());
-        }
+    public void updateStats(char recvCh) throws NullPointerException {
+        switch(recvCh){
+            case SEND_YO:
+                yoCount++;
+                if (this.yoCount % 5 == 0) {
+                    updateConsoleText(yoLabel.getText());
+                }
+                break;
+            case RECV_YO:
+                recvYo++;
+                if (this.recvYo % 5 == 0) {
+                    updateConsoleText(recvyoLabel.getText());
+                }
+                break;
+            case SEND_HOWDY:
+                howdyCount++;
+                if (this.howdyCount % 5 == 0) {
+                    updateConsoleText(howdyLabel.getText());
+                }
+                break;
+            case RECV_HOWDY:
+                recvHowdy++;
+                if (this.recvHowdy % 5 == 0) {
+                    updateConsoleText(recvhowdyLabel.getText());
+                }
+                break;
+            default:
+                throw new NullPointerException("Invalid command");
+        };
     }
 }
 
